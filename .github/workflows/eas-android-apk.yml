@@ -50,7 +50,7 @@ jobs:
       - name: Ensure EAS project is linked (first run only)
         working-directory: mobile-android
         run: |
-          node -e "const fs=require('fs');const j=JSON.parse(fs.readFileSync('app.json','utf8'));process.exit(j.expo?.extra?.eas?.projectId?0:1)" || eas init --non-interactive
+          node -e "const fs=require('fs');const j=JSON.parse(fs.readFileSync('app.json','utf8'));process.exit(j.expo?.extra?.eas?.projectId?0:1)" || eas init --non-interactive --force
 
       - name: Commit EAS project id if added
         shell: bash

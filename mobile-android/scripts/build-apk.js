@@ -67,7 +67,7 @@ sh("npx eas whoami");
 const before = readAppJson();
 if (!getProjectId(before)) {
   console.log("Linking this folder to an EAS project (first run only)…");
-  sh("npx eas init --non-interactive");
+  sh("npx eas init --non-interactive --force");
 }
 
 console.log("Starting cloud build: Android APK (profile: preview)…");
