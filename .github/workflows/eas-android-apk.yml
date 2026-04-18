@@ -1,19 +1,14 @@
 # Build a downloadable Android APK with EAS (preview profile = APK in eas.json).
 #
-# Setup (once per Git hosting provider, e.g. GitHub):
+# One-time setup (GitHub):
 # 1. Repo → Settings → Secrets and variables → Actions → New repository secret
 #    Name:  EXPO_TOKEN
-#    Value: create at https://expo.dev/accounts/[your-account]/settings/access-tokens
+#    Value: https://expo.dev/accounts/[your-account]/settings/access-tokens
 #
-# 2. Link this app to an EAS project and commit app.json (so CI does not create a new project every run):
-#    cd mobile-android
-#    $env:EXPO_TOKEN = "your_token"   # PowerShell
-#    npx eas init --non-interactive
-#    git add app.json && git commit -m "Link EAS project" && git push
+# 2. Actions → "EAS Android APK" → Run workflow
 #
-# 3. Run this workflow: Actions → "EAS Android APK" → Run workflow
-#
-# Optional: connect the same Git repo in the Expo dashboard for Expo-managed Git triggers.
+# First run: links an EAS project (updates mobile-android/app.json) and commits it,
+# then starts the cloud build. Later runs only build.
 
 name: EAS Android APK
 
@@ -27,9 +22,8 @@ jobs:
   build:
     name: EAS build (preview APK)
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: mobile-android
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout
@@ -43,17 +37,36 @@ jobs:
           cache-dependency-path: mobile-android/package-lock.json
 
       - name: Install dependencies
+        working-directory: mobile-android
         run: npm ci
-
-      - name: Verify EAS project is linked (expo.extra.eas.projectId)
-        run: |
-          node -e "const fs=require('fs');const j=JSON.parse(fs.readFileSync('app.json','utf8'));if(!j.expo?.extra?.eas?.projectId){console.error('app.json is missing expo.extra.eas.projectId. Run locally: cd mobile-android && npx eas init --non-interactive, then commit app.json and push.');process.exit(1)}"
 
       - name: Setup Expo and EAS
         uses: expo/expo-github-action@v8
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
+          packager: npm
+
+      - name: Ensure EAS project is linked (first run only)
+        working-directory: mobile-android
+        run: |
+          node -e "const fs=require('fs');const j=JSON.parse(fs.readFileSync('app.json','utf8'));process.exit(j.expo?.extra?.eas?.projectId?0:1)" || eas init --non-interactive
+
+      - name: Commit EAS project id if added
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$GITHUB_WORKSPACE"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add mobile-android/app.json
+          if git diff --staged --quiet; then
+            echo "No EAS project id change to commit."
+          else
+            git commit -m "chore(ci): add EAS project id for builds"
+            git push
+          fi
 
       - name: EAS build (Android APK)
+        working-directory: mobile-android
         run: eas build --platform android --profile preview --non-interactive
