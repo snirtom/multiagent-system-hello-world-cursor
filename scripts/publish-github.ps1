@@ -5,8 +5,18 @@ if (-not (Test-Path $gh)) {
   exit 1
 }
 
-& $gh auth status 2>$null | Out-Null
-if ($LASTEXITCODE -ne 0) {
+$authOk = $false
+try {
+  $prevEap = $ErrorActionPreference
+  $ErrorActionPreference = "SilentlyContinue"
+  & $gh auth status 2>&1 | Out-Null
+  $ErrorActionPreference = $prevEap
+  if ($LASTEXITCODE -eq 0) { $authOk = $true }
+} catch {
+  $authOk = $false
+}
+
+if (-not $authOk) {
   Write-Host @"
 Not logged in to GitHub.
 
