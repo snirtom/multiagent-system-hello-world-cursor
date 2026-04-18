@@ -31,7 +31,15 @@ Not logged in to GitHub.
 
 Set-Location (Join-Path $PSScriptRoot "..")
 
-if (git remote get-url origin 2>$null) {
+# Do not use `git remote get-url origin` when origin may be missing: stderr can
+# surface as a terminating error in PowerShell and skip `gh repo create`.
+$prevEap = $ErrorActionPreference
+$ErrorActionPreference = "SilentlyContinue"
+$remotes = @(git remote)
+$ErrorActionPreference = $prevEap
+$hasOrigin = $remotes -contains "origin"
+
+if ($hasOrigin) {
   Write-Host "Remote 'origin' already set. Pushing branch..."
   git push -u origin HEAD
   exit $LASTEXITCODE
