@@ -1,0 +1,9 @@
+{
+  "name": "multiagent-system-hello-world-cursor",
+  "private": true,
+  "scripts": {
+    "expo": "npm --prefix \"./mobile-android\" run start",
+    "start:expo": "npm --prefix \"./mobile-android\" run start",
+    "build:apk": "npm --prefix \"./mobile-android\" run build:apk"
+  }
+}

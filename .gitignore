@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Local env / secrets (never commit tokens)
+.env
+.env.local
+.env.*.local
+
+# Expo / EAS
+.expo/
+dist/
+*.jks
+*.p8
+*.p12
+*.mobileprovision
+credentials.json
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log
+.cursor/
+
+# Native folders if you run prebuild locally (optional)
+mobile-android/android/
+mobile-android/ios/

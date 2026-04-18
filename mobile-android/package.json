@@ -1,0 +1,23 @@
+{
+  "name": "hello-world-android",
+  "version": "1.0.0",
+  "private": true,
+  "main": "expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "build:android:apk": "eas build --platform android --profile preview",
+    "build:apk": "node ./scripts/build-apk.js",
+    "eas:link": "eas init --non-interactive"
+  },
+  "dependencies": {
+    "expo": "^54.0.0",
+    "react": "19.1.0",
+    "react-native": "0.81.5"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.29.0",
+    "babel-preset-expo": "~54.0.10",
+    "eas-cli": "^18.7.0"
+  }
+}

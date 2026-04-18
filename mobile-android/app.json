@@ -1,0 +1,15 @@
+{
+  "expo": {
+    "name": "Hello World",
+    "slug": "hello-world-android",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "scheme": "hello-world-android",
+    "platforms": ["ios", "android", "web"],
+    "android": {
+      "package": "com.multiagent.helloworld",
+      "versionCode": 1
+    }
+  }
+}
