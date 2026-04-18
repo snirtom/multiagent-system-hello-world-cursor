@@ -4,6 +4,7 @@
   "scripts": {
     "expo": "npm --prefix \"./mobile-android\" run start",
     "start:expo": "npm --prefix \"./mobile-android\" run start",
-    "build:apk": "npm --prefix \"./mobile-android\" run build:apk"
+    "build:apk": "npm --prefix \"./mobile-android\" run build:apk",
+    "publish:github": "powershell -NoProfile -ExecutionPolicy Bypass -File \"./scripts/publish-github.ps1\""
   }
 }
